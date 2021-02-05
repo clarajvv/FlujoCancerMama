@@ -2,8 +2,9 @@
 
 
 ##########################################################
-#Check installation of a package
+######### Checking package installation  #################
 ##########################################################
+
 loadpkg <- function(pkg){
         pkg2install = NA
         installedpkg = NA
@@ -12,21 +13,19 @@ loadpkg <- function(pkg){
         }else{
                 require(pkg, character.only=T)} # Load the package if already installed
         if(!is.na(pkg2install)){
-                source("http://bioconductor.org/biocLite.R")
-                biocLite(pkg2install)
+                
+                BiocManager::install(pkg)
                 installedpkg = pkg
         }
         if(!is.na(installedpkg)){
                 require(pkg, character.only=T) # Load the package if just installed
         }
-        
 }
-
 
 installpkg <- function (pkg){
         if (!require(pkg, character.only=T)){
-                source("http://bioconductor.org/biocLite.R")
-                biocLite(pkg)
+                
+                BiocManager::install(pkg)
         }else{
                 require(pkg, character.only=T) # Load the package if already installed
         }
