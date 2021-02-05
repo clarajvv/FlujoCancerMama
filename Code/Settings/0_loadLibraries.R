@@ -1,0 +1,35 @@
+# Load packages. The function loadpkg will install the package if necessary and will load it if/when installed
+
+
+##########################################################
+######### Checking package installation  #################
+##########################################################
+
+loadpkg <- function(pkg){
+        pkg2install = NA
+        installedpkg = NA
+        if (!(pkg %in% .packages(all.available = T))){
+                pkg2install = pkg
+        }else{
+                require(pkg, character.only=T)} # Load the package if already installed
+        if(!is.na(pkg2install)){
+                
+                BiocManager::install(pkg)
+                installedpkg = pkg
+        }
+        if(!is.na(installedpkg)){
+                require(pkg, character.only=T) # Load the package if just installed
+        }
+}
+
+installpkg <- function (pkg){
+        if (!require(pkg, character.only=T)){
+                
+                BiocManager::install(pkg)
+        }else{
+                require(pkg, character.only=T) # Load the package if already installed
+        }
+        if (pkg %in% .packages(all.available = T)){require(pkg, character.only=T)
+        } # Load the package after installing it
+        
+}
