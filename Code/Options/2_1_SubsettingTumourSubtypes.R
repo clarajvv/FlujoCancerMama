@@ -6,14 +6,14 @@
 ###########################################################
 ### Libraries  
 
-source("Code/Settings/0_loadLibraries.R") # No sé si es necesario llamar al script o con bash se hace solo
+source("Code/Settings/0_loadLibraries.R") 
 loadpkg("dplyr")
 
 
 ###########################################################
-### Loadig data 
+### Loading data 
 
-load("Data/brca_rnaseq_tumour.RData") # No sé si es la mejor forma de traerme los datos 
+load("Data/brca_rnaseq_tumour.RData") 
 load("Data/sample_data.RData")
 
 
@@ -56,7 +56,7 @@ matricesCombinationDEA <- function(d1, d2, nombreSubtipo1, nombreSubtipo2){
   design <- model.matrix(~ status, data = df) #se quedan con 0 las que sean de tnbc y con 1s las que son de luminal
   
   # We have to return counts, design and etiqueta para el DEA
-  label <- paste("Differential_Expression_analysis_breast_cancer_subtypes:", nombreSubtipo1, "vs ", nombreSubtipo2, sep = " ")
+  label <- paste("DEA_breast_cancer_subtypes_", nombreSubtipo1, "_vs_", nombreSubtipo2, sep = "")
 
   return(list("counts" = counts, "design" = design, "label" = label))
 }
@@ -67,9 +67,9 @@ matricesCombinationDEA <- function(d1, d2, nombreSubtipo1, nombreSubtipo2){
 ### Checking entry parameter 
 ### Code: Basal -> 1. LumA -> 2. TNBC -> 3
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Quitar el comentario de los args !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#args = commandArgs(trailingOnly = TRUE, asVaule = False)
-args <- c(1, 2)
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Corregir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Preguntar por consola
+args <- c(2, 3)
 
 if (length(args) < 2) {
   stop("Two breast cancer type must be supplied (Basal, LumA or TNBC) ", call.=FALSE)
@@ -85,7 +85,7 @@ if (length(args) < 2) {
   file_datos_DEA <- "Data/preDeaBasalLumA.RData"
   
 }else if((args[1] == 1 & args[2] == 3) | (args[1] == 3 & args[2] == 1)){
-  # Basal - TNBC
+  # Basal - TNBC -- Problemaaa
   if(!file.exists("Data/preDeaBasalTNBC.RData")){
     subBasal <- subsettingBasal()
     subTNBC <-  subsettingTNBC()
@@ -96,7 +96,7 @@ if (length(args) < 2) {
   
 }else if((args[1] == 2 & args[2] == 3) | (args[1] == 3 & args[2] == 2)){
   # LumA - TNBC
-  if(!file.exists("Data/preDeaBasalTNBC.RData")){
+  if(!file.exists("Data/preDeaLumATNBC.RData")){
     subLumA <- subsettingLumA()
     subTNBC <-  subsettingTNBC()
     preDEA <- matricesCombinationDEA(d1 = subLumA, d2 = subTNBC, nombreSubtipo1 = "LuminalA", nombreSubtipo2 =  "TNBC")
@@ -108,6 +108,7 @@ if (length(args) < 2) {
 }
 
 ###########################################################
-## Pasar al DEA count y design de la combinación solicitada. También pasar la combinación?
+## Pasar al DEA count y design de la combinación solicitada. 
 load(file_datos_DEA)
 save(preDEA, file = "Data/datosParaDEA.RData")
+
