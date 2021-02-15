@@ -1,4 +1,3 @@
-
 ###########################################################
 #### Procesado de datos de los subtipos de tumor ##########
 ###########################################################
@@ -20,67 +19,51 @@ load("Data/sample_data.RData")
 ###########################################################
 ### Functions 
 
-
-#### Get the breast cancer subtypes data
-
+onset_tumor <- function(grade){
+  if(grade == "T1") {return("T1")}
+  if(grade == "T2") {return("T2")}
+  if(grade == "T3"|| grade == "T4") {return("T3")}
+  if(grade == "TX" || grade == "NA" ) {return(NA)}
+}
 
 ###########################################################
 # Prepocesado de datos
 
-onset_tumor <- function(grade){
-  if(grade == "T1") {return("1")}
-  if(grade == "T2") {return("2")}
-  if(grade == "T3") {return("3")}
-  if(grade == "TX" || grade == "NA" || grade == "T4") {return(NA)}
-}
-
-onset_vital <- function(vital){
-  if(vital == "DECEASED") {return("0")}
-  if(vital == "LIVING") {return("1")}
-}
-
 
 tumor_predata <- data.frame(ID = sample_data$`Complete TCGA ID`, tumor = as.factor(sample_data$Tumor), 
-                          vital = as.factor(sample_data$`Vital Status`))
+                            vital = as.factor(sample_data$`Vital Status`))
+
+tumor_predata$tumor <- sapply(tumor_predata$tumor, onset_tumor)
 
 tumor_predata <- na.omit(tumor_predata)
 
-tumor_predata$tumor <- sapply(tumor_predata$tumor, onset_tumor)
-levels(tumor_predata$vital) <- c("0", "1", NA)
+print("Lo primero que haremos será comprobar que la cantidad de grados de tumor tiene relación con la tasa de supervivencia")
+tablaSupervivencia <- xtabs(~tumor_predata$vital+ tumor_predata$tumor)
+pValor <- unlist(unname(fisher.test(tablaSupervivencia, simulate.p.value = TRUE)[1]))
 
-total <- na.omit(tumor_predata)
+print(paste("El pvalor es ", round(pValor, 4), ", por lo que se ha encontrado relación entre ambas variables. Procederemos a efectuar un DEA."))
 
-#####################################################
-###  fisher test
 
-tb <- table(total[,-1])
-
-fis<- fisher.test(tb, workspace = 2e8)
-
-if(fis$p.value<0.05){
-#####################################################
-### Preparing data for DEA
+if(pValor<0.05){
+  #####################################################
+  ### Preparing data for DEA
   
   first_sample <- sample_data %>% dplyr::filter(Tumor=="T1")
-  second_sample <- sample_data %>% dplyr::filter(Tumor=="T2")
   third_sample <- sample_data %>% dplyr::filter(Tumor=="T3")
   
   first_barcodes <- first_sample$`Complete TCGA ID`
-  second_barcodes <- second_sample$`Complete TCGA ID`
   third_barcodes <- third_sample$`Complete TCGA ID`
   
   d1 <- brca_rnaseq.tumour[, which(colnames(brca_rnaseq.tumour) %in% first_barcodes)]
-  d2 <- brca_rnaseq.tumour[, which(colnames(brca_rnaseq.tumour) %in% second_barcodes)]
   d3 <- brca_rnaseq.tumour[, which(colnames(brca_rnaseq.tumour) %in% third_barcodes)]
   
-  rnaseq.for.de <- cbind(d1, d2, d3)
+  rnaseq.for.de <- cbind(d1, d3)
   counts <-  rnaseq.for.de[apply(rnaseq.for.de, 1, function(x) sum(x==0)) < ncol(rnaseq.for.de)*0.8, ]
   
   # Create a design matrix thar contains the RNA samples that are applied to each category (TNBC vs luminal)
-  df.f <- data_frame("sample" = colnames(d1), "status" = rep(0, length(colnames(d1))) )
-  df.s <- data_frame("sample" = colnames(d2), "status" = rep(1, length(colnames(d2))) )
-  df.t <- data_frame("sample" = colnames(d3), "status" = rep(3, length(colnames(d3))) )
-  df <- rbind(df.f,df.s, df.t)
+  df.f <- tibble("sample" = colnames(d1), "status" = rep(0, length(colnames(d1))) )
+  df.t <- tibble("sample" = colnames(d3), "status" = rep(1, length(colnames(d3))) )
+  df <- rbind(df.f, df.t)
   design <- model.matrix(~ status, data = df) #se quedan con 0 las que sean de tnbc y con 1s las que son de luminal
   
   # We have to return counts, design and etiqueta para el DEA
