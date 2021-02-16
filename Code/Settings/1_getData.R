@@ -8,8 +8,8 @@
 ## Libraries 
 source("Code/Settings/0_loadLibraries.R")
 
-require("RTCGAToolbox") # To browse and get TCGA data
-require("readxl")
+loadpkg("RTCGAToolbox") # To browse and get TCGA data
+loadpkg("readxl")
 
 
 ###############################################################
