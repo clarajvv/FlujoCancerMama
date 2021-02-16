@@ -5,22 +5,22 @@
 ###########################################################
 ### Libraries  
 
-source("Code/Settings/0_loadLibraries.R") # No sÃ© si es necesario llamar al script o con bash se hace solo
+source("Code/Settings/0_loadLibraries.R") # No se si es necesario llamar al script o con bash se hace solo
 loadpkg("dplyr")
 
 ###########################################################
 ### Loadig data 
 
-load("Data/brca_rnaseq_tumour.RData") # No sÃ© si es la mejor forma de traerme los datos 
+load("Data/brca_rnaseq_tumour.RData") # No se si es la mejor forma de traerme los datos 
 load("Data/sample_data.RData")
 
 ###########################################################
 ### Catching arguments and creating subsets
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Quitar el comentario de los args !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#args = commandArgs(trailingOnly = TRUE, asVaule = False)
+args = commandArgs(trailingOnly = TRUE)
 #Separo el conjunto por el valor introducido. El minimo de edad es 26. El maximo es 90
-args <- c(55, 66) #Con este el fisher da menor a 0.05!!!!
+#args <- c(55, 66) #Con este el fisher da menor a 0.05!!!!
 
 onset_age <- function(age){
   if(as.numeric(age) <= args[1]) {return("0")}
