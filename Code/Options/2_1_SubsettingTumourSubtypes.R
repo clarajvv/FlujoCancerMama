@@ -69,8 +69,9 @@ matricesCombinationDEA <- function(d1, d2, nombreSubtipo1, nombreSubtipo2){
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Corregir !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Preguntar por consola
-args <- c(2, 3)
-
+#args <- c(2, 3)
+args = commandArgs(trailingOnly = TRUE)
+                                 
 if (length(args) < 2) {
   stop("Two breast cancer type must be supplied (Basal, LumA or TNBC) ", call.=FALSE)
 }else if((args[1] == 1 & args[2] == 2) | (args[1] == 2 & args[2] == 1)){
