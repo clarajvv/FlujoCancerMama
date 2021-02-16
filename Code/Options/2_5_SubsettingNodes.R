@@ -1,6 +1,3 @@
-##borrar
-setwd("D:/uma/cuarto/Herramientas y Algoritmos/functional_analysis/flujo cancer")
-
 #cargar lirberias
 source("Code/Settings/0_loadLibraries.R") # no se si hace falta con el bash, creo que no
 loadpkg("dplyr")
@@ -9,12 +6,12 @@ loadpkg("dplyr")
 load("Data/brca_rnaseq_tumour.RData")
 load("Data/sample_data.RData")
 
-print("Lo primero que haremos será comprobar que el que haya nodos afectados tiene relación con la tasa de supervivencia")
+print("Lo primero que haremos sera comprobar que el que haya nodos afectados tiene relacion con la tasa de supervivencia")
 tablaSupervivencia <- xtabs(~sample_data$`Vital Status`+ sample_data$`Node-Coded`)
 pValor <- unlist(unname(fisher.test(tablaSupervivencia, simulate.p.value = TRUE)[1]))
 # si la tiene, no hago un if porque este dato va a ser siempre igual
 
-print(paste("El pvalor es ", round(pValor, 4), ", por lo que se ha encontrado relación entre ambas variables. Procederemos a efectuar un DEA."))
+print(paste("El pvalor es ", round(pValor, 4), ", por lo que se ha encontrado relacion entre ambas variables. Procederemos a efectuar un DEA."))
 
 subsettingNodes <- function(numNodos){
   samples <- sample_data %>% dplyr::filter(`Node-Coded` == numNodos)
