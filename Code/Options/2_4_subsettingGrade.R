@@ -1,18 +1,18 @@
 ###########################################################
-#### Procesado de datos de los subtipos de tumor ##########
+#### Procesado de datos de los grados de tumor ##########
 ###########################################################
 
 ###########################################################
 ### Libraries  
 
-source("Code/Settings/0_loadLibraries.R") # No s√© si es necesario llamar al script o con bash se hace solo
+source("Code/Settings/0_loadLibraries.R") # No se si es necesario llamar al script o con bash se hace solo
 loadpkg("dplyr")
 
 
 ###########################################################
 ### Loadig data 
 
-load("Data/brca_rnaseq_tumour.RData") # No s√© si es la mejor forma de traerme los datos 
+load("Data/brca_rnaseq_tumour.RData") # No se si es la mejor forma de traerme los datos 
 load("Data/sample_data.RData")
 
 
@@ -37,11 +37,11 @@ tumor_predata$tumor <- sapply(tumor_predata$tumor, onset_tumor)
 
 tumor_predata <- na.omit(tumor_predata)
 
-print("Lo primero que haremos ser· comprobar que la cantidad de grados de tumor tiene relaciÛn con la tasa de supervivencia")
+print("Lo primero que haremos sera comprobar que la cantidad de grados de tumor tiene relacion con la tasa de supervivencia")
 tablaSupervivencia <- xtabs(~tumor_predata$vital+ tumor_predata$tumor)
 pValor <- unlist(unname(fisher.test(tablaSupervivencia, simulate.p.value = TRUE)[1]))
 
-print(paste("El pvalor es ", round(pValor, 4), ", por lo que se ha encontrado relaciÛn entre ambas variables. Procederemos a efectuar un DEA."))
+print(paste("El pvalor es ", round(pValor, 4), ", por lo que se ha encontrado relacion entre ambas variables. Procederemos a efectuar un DEA."))
 
 
 if(pValor<0.05){
@@ -72,7 +72,7 @@ if(pValor<0.05){
   
   save(preDEA, file = "Data/datosParaDEA.RData")
   
-  print("A continuaciÛn se realizar· el DEA del estudio grado-supervivencia")
+  print("A continuaci√≥n se realizara el DEA del estudio grado-supervivencia")
 }else{
   preDEA <- NULL
   save(preDEA, file = "Data/datosParaDEA.RData")
