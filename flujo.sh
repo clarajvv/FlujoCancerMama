@@ -1,4 +1,5 @@
 #/bin/bash
+chmod +x flujo.sh
 if [ "$1" == "" ];then 
 	echo "En este flujo de datos podremos realizar diferentes DEAs, enfrentando siempre la variable de supervivencia del paciente con la que elija el usuario. 
 
