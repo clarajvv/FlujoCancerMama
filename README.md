@@ -14,3 +14,5 @@ En este flujo de datos podremos realizar diferentes DEAs (Análisis de Expresió
 5. Si existen nodos afectados. A diferencia de la segunda opción, medimos solamente si hay algún nodo afectado o no. Es el equivalente de comparar los cero nodos con el resto de variables. Al ser los valores posibles positivo o negativo, el usuario no tiene la opción de elegirlos.
 6. Estado ER, referido a si el tumor posee receptores de estrógenos. Los valores posibles son de nuevo positivo o negativo, por lo que el usuario no los elegirá.
 7. Estado PR, referido a si el tumor posee receptores de progesterona. Como en el caso anterior, los valores serán positivo o negativo, por lo que el usuario no los elegirá.
+
+Para la ejecución del script de bash, debe hacerse desde la carpeta FlujoCancerMama que se descargará al clonar el repositorio. Al llamar al script sin ningún parámetro, se arrojará un mensaje con la iformación sobre qué parametros hay que pasarle en función del análisis que se desee hacer. 
